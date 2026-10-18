@@ -75,16 +75,20 @@ Note: If you are using a Jekyll version less than 3.5.0, use the `gems` key inst
 
 ## Building and previewing your site locally
 
-Use Ruby 3.3 (matching the GitHub Actions workflows) and [Bundler] 2.5.9
-(matching `Gemfile.lock`). On Linux, you can create a user-local environment
-with Conda:
+Use Ruby 3.2 or 3.3 and [Bundler] 2.5.9 (matching `Gemfile.lock`). The GitHub
+Actions workflows use Ruby 3.3. On Ubuntu 24.04, install Ruby and the tools needed
+to build native gems, then install Bundler for your user:
 
 ```sh
-conda create -n robotic-manipulation-notebook --override-channels -c conda-forge \
-  ruby=3.3.6 gcc_linux-64=13 gxx_linux-64=13 make pkg-config
-conda activate robotic-manipulation-notebook
-gem install bundler -v 2.5.9 --no-document
+sudo apt update
+sudo apt install ruby-full build-essential zlib1g-dev libffi-dev libssl-dev pkg-config
+mkdir -p "$HOME/.local/bin"
+gem install bundler -v 2.5.9 --user-install --bindir "$HOME/.local/bin" --no-document
+export PATH="$HOME/.local/bin:$PATH"
 ```
+
+Keep `~/.local/bin` on your `PATH` in new terminals. The configured local machine
+already adds it through `~/.profile`.
 
 From the root directory of this project, install the locked dependencies and
 start the preview server with LiveReload:
@@ -100,8 +104,9 @@ Open <http://127.0.0.1:4000/robotic-manipulation-notebook/>. The path comes from
 restart the server after changing `_config.yml`. Press `Ctrl+C` to stop it.
 
 The built site is stored in `_site`; dependencies are stored in `vendor/bundle`.
-Both directories are ignored by Git. In a new terminal, activate the Conda
-environment again before running Bundler unless it is already on your `PATH`.
+Both directories are ignored by Git. On the configured local machine,
+`~/.local/bin/bundle` runs with system Ruby. Run `bundle install` again after
+changing Ruby versions to rebuild native gems.
 
 ## Publishing your built site on a different platform
 

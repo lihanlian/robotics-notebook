@@ -1,0 +1,41 @@
+{%- comment -%}
+  Extend Just the Docs 0.12 navigation with visual groups. Keep the complete
+  parent index so the theme can still resolve children and deeper ancestors.
+  Group only regular pages; collections retain the theme's normal rendering.
+{%- endcomment -%}
+{%- assign nav_parenthood = include.pages
+      | where_exp: "item", "item.title != nil" | group_by: "parent" -%}
+{%- assign nav_top_nodes = nav_parenthood
+      | where_exp: "item", "item.name == ''" | map: "items" | first -%}
+{%- include components/nav/sorted.html pages=nav_top_nodes -%}
+{%- assign notebook_top_nodes = nav_sorted -%}
+{%- assign nav_top_node_titles = nav_top_nodes | map: "title" -%}
+{%- assign notebook_ancestors = "" | split: "" -%}
+
+{%- if site.nav_groups and include.pages == site.html_pages -%}
+  {%- assign notebook_group_ids = site.nav_groups | map: "id" -%}
+  {%- assign notebook_ungrouped = "" | split: "" -%}
+  {%- for notebook_node in notebook_top_nodes -%}
+    {%- unless notebook_group_ids contains notebook_node.nav_group -%}
+      {%- assign notebook_ungrouped = notebook_ungrouped | push: notebook_node -%}
+    {%- endunless -%}
+  {%- endfor -%}
+  {%- if notebook_ungrouped.size > 0 -%}
+    {%- include components/nav/links.html pages=notebook_ungrouped ancestors=notebook_ancestors all=include.all -%}
+  {%- endif -%}
+
+  {%- for notebook_group in site.nav_groups -%}
+    {%- assign notebook_group_pages = notebook_top_nodes | where: "nav_group", notebook_group.id -%}
+    {%- unless include.all -%}
+      {%- assign notebook_group_pages = notebook_group_pages | where_exp: "item", "item.nav_exclude != true" -%}
+    {%- endunless -%}
+    {%- if notebook_group_pages.size > 0 -%}
+      <section class="notebook-nav-group" aria-labelledby="nav-group-{{ notebook_group.id | escape }}">
+        <h2 class="notebook-nav-heading" id="nav-group-{{ notebook_group.id | escape }}">{{ notebook_group.title | escape }}</h2>
+        {%- include components/nav/links.html pages=notebook_group_pages ancestors=notebook_ancestors all=include.all -%}
+      </section>
+    {%- endif -%}
+  {%- endfor -%}
+{%- else -%}
+  {%- include components/nav/links.html pages=notebook_top_nodes ancestors=notebook_ancestors all=include.all -%}
+{%- endif -%}

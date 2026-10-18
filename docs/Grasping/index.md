@@ -1,6 +1,7 @@
 ---
 title: Grasping
-nav_order: 5
+nav_order: 8
+nav_group: manipulation
 ---
 
 # Grasping

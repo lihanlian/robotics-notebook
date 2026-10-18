@@ -1,6 +1,7 @@
 ---
 title: Dynamics
 nav_order: 2
+nav_group: foundations
 ---
 
 # Dynamics

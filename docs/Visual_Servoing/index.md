@@ -1,6 +1,7 @@
 ---
 title: Visual Servoing
-nav_order: 6.5
+nav_order: 9
+nav_group: manipulation
 ---
 
 # Visual Servoing

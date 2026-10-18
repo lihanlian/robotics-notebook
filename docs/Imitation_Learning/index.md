@@ -1,6 +1,7 @@
 ---
 title: Imitation Learning
-nav_order: 7
+nav_order: 11
+nav_group: learning
 ---
 
 # Imitation Learning

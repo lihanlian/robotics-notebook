@@ -1,6 +1,7 @@
 ---
 title: Motion Planning
 nav_order: 6
+nav_group: perception_navigation
 ---
 
 # Motion Planning

@@ -1,0 +1,18 @@
+{%- comment -%}
+  Match the current URL instead of the theme's positional list selectors, which
+  assume all ordinary pages share one list. The theme disables this stylesheet
+  once JavaScript takes over. :has() also opens ancestors without JavaScript.
+{%- endcomment -%}
+{% assign notebook_current_url = page.url | relative_url %}
+#site-nav .nav-list .nav-list-link[href="{{ notebook_current_url }}"] {
+  color: var(--notebook-nav-accent);
+  background-color: var(--notebook-nav-active-background);
+  border-left-color: var(--notebook-nav-accent);
+  font-weight: 600;
+}
+#site-nav .nav-list-item:has(.nav-list-link[href="{{ notebook_current_url }}"]) > .nav-list {
+  display: block;
+}
+#site-nav .nav-list-item:has(.nav-list-link[href="{{ notebook_current_url }}"]) > .nav-list-expander svg {
+  transform: rotate(-90deg);
+}

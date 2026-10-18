@@ -1,6 +1,7 @@
 ---
 title: Kinematics
 nav_order: 1
+nav_group: foundations
 ---
 
 # Kinematics

@@ -1,6 +1,19 @@
-title: Robotic Manipulation Notebook
-description: A starter template for a Jeykll site using the Just the Docs theme!
+title: Robotics Notebook
+description: Manipulation, Mobile Robotics, and Learning.
 theme: just-the-docs
+
+# Visual chapter groups; pages keep their existing URLs and parent relationships.
+nav_groups:
+  - id: foundations
+    title: Foundations
+  - id: perception_navigation
+    title: Perception & Navigation
+  - id: manipulation
+    title: Manipulation
+  - id: learning
+    title: Learning
+  - id: practice
+    title: Practice
 
 url: https://lihanlian.github.io
 baseurl: "/robotic-manipulation-notebook"

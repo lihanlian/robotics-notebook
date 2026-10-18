@@ -1,6 +1,7 @@
 ---
 title: Reinforcement Learning
-nav_order: 8
+nav_order: 12
+nav_group: learning
 ---
 
 # Reinforcement Learning
