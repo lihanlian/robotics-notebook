@@ -99,7 +99,7 @@ bundle install
 bundle exec jekyll serve --livereload
 ```
 
-Open <http://127.0.0.1:4000/robotic-manipulation-notebook/>. The path comes from
+Open <http://127.0.0.1:4000/robotics-notebook/>. The path comes from
 `baseurl` in `_config.yml`. Edits rebuild the site and reload the browser;
 restart the server after changing `_config.yml`. Press `Ctrl+C` to stop it.
 
