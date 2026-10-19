@@ -1,7 +1,8 @@
 ---
 title: Piper-ViT-VS
-parent: Examples
-nav_order: 2
+parent: Piper
+permalink: /docs/Examples/piper-vit-vs.html
+nav_order: 1
 ---
 
 # Piper-ViT-VS
