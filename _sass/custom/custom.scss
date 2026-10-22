@@ -134,3 +134,61 @@
     stroke-width: 2;
   }
 }
+
+// Only pages with a populated outline receive a desktop right sidebar.
+@media screen and (min-width: 1024px) {
+  .main.notebook-has-toc {
+    // Use the available right margin before reducing the article's width.
+    max-width: calc(#{$content-width} + 232px);
+
+    .main-header {
+      max-width: $content-width;
+    }
+
+    .main-content-wrap {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 208px;
+      column-gap: 24px;
+
+      > .breadcrumb-nav {
+        grid-column: 1;
+        grid-row: 1;
+      }
+
+      > #main-content {
+        grid-column: 1;
+        grid-row: 2;
+        min-width: 0;
+      }
+    }
+
+    .notebook-toc {
+      grid-column: 2;
+      grid-row: 2;
+      position: sticky;
+      top: 16px;
+      align-self: start;
+      display: flex;
+      flex-direction: column;
+      max-height: calc(100vh - var(--notebook-toc-top, 16px) - 16px);
+      min-width: 0;
+      font-size: 14px;
+
+      > :first-child:not(.notebook-toc__scroll) {
+        flex-shrink: 0;
+        margin-top: 0;
+      }
+    }
+
+    .notebook-toc__scroll {
+      min-height: 0;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+
+      > #markdown-toc {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
