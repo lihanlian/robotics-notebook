@@ -22,21 +22,65 @@ Notes on the Stretch 3 waypoint-tracking project. Implementation details and res
 
 ### System architecture
 
-- Roles of the tracking node, Stretch ROS driver, `stretch_body`, and hardware.
-- Command flow through `/stretch/cmd_vel`; feedback through odometry and status topics.
+The tracking node computes velocity commands from odometry. The Stretch ROS driver receives those commands and uses `stretch_body`, the Python hardware API, to control the base. Feedback returns through the driver to the tracker. `PDController` and `SquareTask` are Python objects inside the tracker, not separate ROS nodes. The [driver source](https://github.com/hello-robot/stretch_ros2/blob/humble/stretch_core/stretch_core/stretch_driver.py) shows how ROS connects to `stretch_body`.
 
 ### ROS concepts and interfaces
 
-- Nodes, topics, messages, services, and parameters used in this project.
-- `/odom`: timestamps, frame identifiers, pose, orientation, velocity, and covariance.
+A **node** performs a specific task. **Topics** carry typed messages between publishers and subscribers:
+
+- `/stretch/cmd_vel`: `Twist` commands; `linear.x` specifies forward speed (m/s), and `angular.z` specifies yaw rate (rad/s).
+- `/odom`: `Odometry` feedback containing estimated pose and velocity.
+- `/is_homed`, `/mode`, and `/is_runstopped`: driver status messages.
+
+In `/odom`, `header.stamp` records time. This tracker expects pose in `odom` and velocity in `base_link`, identified by `header.frame_id` and `child_frame_id`. It reads `pose.pose.position`, converts quaternion orientation to yaw, and reads velocity from `twist.twist`. Covariance fields describe uncertainty but are unused here. See the [message definition](https://github.com/ros2/common_interfaces/blob/humble/nav_msgs/msg/Odometry.msg).
+
+**Services** exchange a request and response for discrete operations. **Parameters** are node settings, such as `side_length` and `control_hz`.
 
 ### Starting and inspecting the system
 
-- `ros2 launch`, `ros2 run`, `ros2 service call`, and startup parameter loading.
-- Node, topic, message-type, and parameter inspection commands.
-- Reading `rqt_graph`: communication connections versus callback execution order.
+Source ROS and workspace setup files so the terminal can find packages. `stretch_tracking` is the package, `track` is its executable, and `/tracking_node` is the running node's name.
 
-*Figure placeholder: annotated `rqt_graph` screenshot showing the tracker, driver, and relevant topics.*
+```bash
+ros2 launch stretch_tracking tracking.launch.py
+```
+
+`launch` runs a launch description. This one starts the tracker with the installed `experiment.yaml`; the driver runs separately. In YAML, `tracking_node` selects the node and `ros__parameters` contains overrides for defaults supplied to `declare_parameter()`.
+
+Alternatively, `run` starts the executable directly:
+
+```bash
+ros2 run stretch_tracking track --ros-args \
+  --params-file path/to/experiment.yaml -p trace_callbacks:=false
+```
+
+Replace the example path with your YAML. `--ros-args` introduces ROS arguments; `--params-file` loads configuration; the later `-p` overrides tracing. Omitting these arguments uses code defaults. This tracker caches settings at startup, so restart it to apply configuration changes.
+
+A service call illustrates request/response communication:
+
+```bash
+ros2 service call /switch_to_navigation_mode std_srvs/srv/Trigger "{}"
+```
+
+The arguments identify the service, its type, and an empty request. `Trigger` returns `success` and `message`.
+
+Inspect the system while the tracker runs:
+
+```bash
+ros2 node list
+ros2 node info /tracking_node
+ros2 topic echo /odom --once
+ros2 topic hz /stretch/cmd_vel
+ros2 param get /tracking_node side_length
+ros2 run rqt_graph rqt_graph
+```
+
+These list nodes, show connections, print feedback, measure command frequency, read a setting, and visualize communication. The nominal command rate is 20 Hz; odometry has its own publishing rate. `rqt_graph` shows driver-to-tracker feedback and tracker-to-driver commands, not Python callback order.
+
+![ROS graph showing the Stretch driver's joint-state and robot-description connections]({{ '/assets/images/Stretch/rqt_graph.png' | relative_url }})
+
+*Stretch's joint-state and robot-description connections in `rqt_graph`. The tracking node is not shown in this capture.*
+
+**Ellipses represent nodes**, such as `/stretch_driver`; **rectangles represent topics**, such as `/joint_states`. Arrows indicate message flow: node → topic means publishing, and topic → node means subscribing. The larger `/stretch` box groups items in that namespace; it is not a node.
 
 ## 2. Implementation: From Feedback to Commands
 
