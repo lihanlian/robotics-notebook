@@ -38,6 +38,86 @@ In `/odom`, `header.stamp` records time. This tracker expects pose in `odom` and
 
 ### Starting and inspecting the system
 
+#### Start the driver
+
+Use terminals with the ROS and workspace environments sourced. In terminal 1, start the Stretch driver directly in navigation mode and leave it running:
+
+```bash
+ros2 launch stretch_core stretch_driver.launch.py mode:=navigation
+```
+
+`ros2 launch` runs a launch description. `stretch_core` is Hello Robot’s ROS package containing Stretch’s core interfaces; a package groups code, launch files, configuration, and dependencies. Its driver connects ROS to the hardware through `stretch_body` ([documentation](https://github.com/hello-robot/stretch_ros2/blob/humble/stretch_core/README.md)). `stretch_driver.launch.py` is the package’s Python launch file. `mode:=navigation` assigns `navigation` to its `mode` launch argument, enabling base velocity commands on `/stretch/cmd_vel`.
+
+If you instead run `ros2 launch stretch_core stretch_driver.launch.py`, the driver defaults to **position mode**. Switch the running driver to navigation mode from another configured terminal:
+
+```bash
+ros2 service call /switch_to_navigation_mode std_srvs/srv/Trigger "{}"
+```
+
+`ros2 service call` sends a request and waits for a response. `/switch_to_navigation_mode` names the driver’s service; the leading `/` makes it an absolute ROS name. `std_srvs/srv/Trigger` defines the request and response: `std_srvs` is the package, `srv` identifies a service interface, and `Trigger` is its name. `"{}"` supplies an empty YAML request; `Trigger` has no request fields and returns `success` and `message`. In ROS 2 Humble, the request defaults to `{}`, so this is equivalent:
+
+```bash
+ros2 service call /switch_to_navigation_mode std_srvs/srv/Trigger
+```
+
+The service call waits if the service is unavailable; it does not start the driver. Skip this switch if already in navigation mode.
+
+#### Home and stow through ROS
+
+Keep the tracker stopped during preparation. With the driver running in terminal 1, use a second configured terminal. Skip homing if already homed, and stowing if already stowed. Run each needed command separately, waiting for successful completion before continuing:
+
+```bash
+ros2 service call /home_the_robot std_srvs/srv/Trigger "{}"
+ros2 service call /stow_the_robot std_srvs/srv/Trigger "{}"
+```
+
+These operations move joints and require clearance. The driver temporarily enters `homing` or `stowing` mode, then restores its previous mode.
+
+#### Alternative: prepare before starting the driver
+
+You can instead use standalone tools while the driver and other hardware-owning software are stopped. Run the needed preparation commands sequentially, then start the driver:
+
+```bash
+stretch_robot_home.py
+stretch_robot_stow.py
+ros2 launch stretch_core stretch_driver.launch.py mode:=navigation
+```
+
+Both tools access the hardware directly through Stretch Body. The ROS driver uses the same library and keeps its connection open. A process lock prevents a second program from taking ownership. This restriction applies to the standalone tools; homing and stowing through ROS services use the running driver’s existing connection.
+
+#### Monitor odometry
+
+With the driver running, use another configured terminal to display position continuously:
+
+```bash
+ros2 topic echo /odom | grep -A3 "position:"
+```
+
+- `ros2 topic echo`: subscribe and print messages as YAML; `ros2 echo` is not valid syntax.
+- `/odom`: the topic carrying `nav_msgs/msg/Odometry` messages.
+- `|`: pass the left command’s standard output to the right command’s standard input.
+- `grep`: filter lines matching `"position:"`; the shell removes the quotes.
+- `-A3`: print each match and the next three lines (`x`, `y`, `z`). Equivalent forms are `-A 3` and `--after-context=3`. Separate match groups may have `--` between them.
+
+For example:
+
+```yaml
+    position:
+      x: 0.12
+      y: -0.03
+      z: 0.0
+```
+
+ROS can also select the field directly:
+
+```bash
+ros2 topic echo /odom --field pose.pose.position
+```
+
+`--field` selects the nested `pose.pose.position` field, printing only `x`, `y`, and `z`. These estimates are in meters in the odometry frame, not displacement from the experiment’s starting position. Both commands only monitor feedback. Press **Ctrl+C** in that terminal to stop monitoring.
+
+---
+
 Source ROS and workspace setup files so the terminal can find packages. `stretch_tracking` is the package, `track` is its executable, and `/tracking_node` is the running node's name.
 
 ```bash
