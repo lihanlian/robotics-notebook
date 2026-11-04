@@ -1,6 +1,6 @@
 ---
 title: Pose Estimation
-parent: Perception
+parent: Computer Vision
 nav_order: 3
 ---
 

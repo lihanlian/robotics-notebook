@@ -1,7 +1,7 @@
 ---
 title: Camera Calibration
 layout: default
-parent: Perception
+parent: Computer Vision
 nav_order: 2
 ---
 

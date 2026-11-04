@@ -1,6 +1,6 @@
 ---
 title: Pinhole Camera Model
-parent: Perception
+parent: Computer Vision
 nav_order: 1
 ---
 
