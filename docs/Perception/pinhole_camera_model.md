@@ -61,7 +61,7 @@ In this geometry:
 
 - the **principal axis** is perpendicular to the image plane and passes through $$C$$;
 
-- the **principal point** is where the principal axis intersects the image plane;
+- the **principal point** $$p$$ is where the principal axis intersects the image plane, with pixel coordinates $$(c_x,c_y)$$;
 
 - the **principal plane** passes through $$C$$ and is parallel to the image plane.
 
@@ -98,7 +98,7 @@ $$
 
 Thus, $$[R\mid t]$$ determines where the point is relative to the camera, while $$K$$ determines where its viewing ray appears in the pixel coordinate system. Together they form the $$3\times4$$ camera projection matrix $$P$$.
 
-## 13. Complete intrinsic matrix
+## Complete intrinsic matrix
 
 The general intrinsic matrix is
 
@@ -176,105 +176,9 @@ v=f_y\frac{Y}{Z}+c_y
 }.
 $$
 
-## 14. Connection between normalized and pixel interaction matrices
+## Calibrated mapping and coordinate conventions
 
-The normalized feature is
-
-$$
-s_n=
-\begin{bmatrix}
-x \\
-y
-\end{bmatrix},
-$$
-
-while the pixel feature is
-
-$$
-s_p=
-\begin{bmatrix}
-u \\
-v
-\end{bmatrix}
-=
-\begin{bmatrix}
-f_xx+c_x \\
-f_yy+c_y
-\end{bmatrix}.
-$$
-
-Differentiate:
-
-$$
-\dot{u}=f_x\dot{x},
-\qquad
-\dot{v}=f_y\dot{y}.
-$$
-
-Therefore,
-
-$$
-\begin{bmatrix}
-\dot{u} \\
-\dot{v}
-\end{bmatrix}
-=
-\begin{bmatrix}
-f_x & 0 \\
-0 & f_y
-\end{bmatrix}
-\begin{bmatrix}
-\dot{x} \\
-\dot{y}
-\end{bmatrix}.
-$$
-
-If
-
-$$
-\dot{s}_n=L_n\nu_c,
-$$
-
-then
-
-$$
-\dot{s}_p
-=
-\begin{bmatrix}
-f_x & 0 \\
-0 & f_y
-\end{bmatrix}
-L_n\nu_c.
-$$
-
-Hence,
-
-$$
-\boxed{
-L_{\mathrm{pixel}}
-=
-\begin{bmatrix}
-f_x & 0 \\
-0 & f_y
-\end{bmatrix}
-L_n
-}.
-$$
-
-With nonzero skew, the multiplier becomes
-
-$$
-\begin{bmatrix}
-f_x & s \\
-0 & f_y
-\end{bmatrix}.
-$$
-
-This is why focal lengths appear when the lecture moves from normalized coordinates to pixel coordinates.
-
-## 3. Why “calibrated mapping with convenient signs”?
-
-This sentence is easy to misunderstand.
+Calibration defines a mapping for a chosen coordinate convention.
 
 It does not mean:
 
@@ -313,7 +217,7 @@ $$
 
 This is the “calibrated mapping.”
 
-### What does calibration actually do?
+### Camera parameter calibration
 
 Suppose you have a chessboard.
 
@@ -365,7 +269,7 @@ Instead, calibration says:
 
 > “Given this pixel coordinate system, this $$K$$ makes the projection equations correct.”
 
-## 4. Why does the virtual image plane work physically?
+## Physical and virtual image planes
 
 This is the key idea:
 
@@ -425,11 +329,11 @@ They differ only by a sign.
 
 The ray itself did not change.
 
-### Why does OpenCV choose virtual coordinates?
+### OpenCV coordinate conventions
 
-Because it gives nicer properties:
+This coordinate convention has the following properties:
 
-### Property 1
+### Positive depth
 
 Points in front of the camera have:
 
@@ -443,7 +347,7 @@ $$
 Z<0
 $$
 
-### Property 2
+### Horizontal pixel direction
 
 A point on the right gives:
 
@@ -453,7 +357,7 @@ $$
 
 which matches image intuition.
 
-### Property 3
+### Positive focal lengths
 
 The intrinsic matrix contains positive focal lengths:
 
@@ -465,11 +369,9 @@ instead of negative values.
 
 This makes optimization and calibration much easier.
 
-## 5. Is the camera manufacturer doing the sign flip?
+## Optical inversion and digital image conventions
 
-Partially, but not exactly.
-
-There are two separate things:
+Optical image formation and digital image representation are separate stages:
 
 ### Optical formation
 
@@ -506,7 +408,7 @@ But the important point is:
 The intrinsic matrix $$K$$ already describes the mapping between 3D rays and those pixels.
 
 
-## 9. Physical focal length $$f$$
+## Physical focal length $$f$$
 
 The physical focal length is a length, commonly measured in millimetres:
 
@@ -529,7 +431,7 @@ $$
 
 It must first be converted into pixel units.
 
-## 10. Meaning of $$f_x$$ and $$f_y$$
+## Focal lengths in pixels
 
 The quantities $$f_x$$ and $$f_y$$ are focal lengths measured in horizontal and vertical pixels:
 
@@ -591,7 +493,7 @@ $$
 
 These quantities have the same role as the OpenCV notation $$f_x,f_y$$.
 
-## 11. Numerical conversion example
+### Numerical conversion example
 
 Suppose
 
@@ -637,7 +539,7 @@ $$
 
 is dimensionless. Consequently, $$f_x(X/Z)$$ has units of pixels, matching $$u$$.
 
-## 12. Why use two focal lengths instead of one?
+## Independent horizontal and vertical focal lengths
 
 There are several practical reasons.
 

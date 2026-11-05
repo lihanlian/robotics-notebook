@@ -18,25 +18,7 @@ This section covers vision-based robot control methods.
 
 ---
 
-View this site's [\_config.yml](https://github.com/just-the-docs/just-the-docs/tree/main/_config.yml) file as an example.
-
-## Site logo
-
-```yaml
-# Set a path/url to a logo that will be displayed instead of the title
-logo: "/assets/images/just-the-docs.png"
-```
-
-## Site favicon
-
-```yaml
-# Set a path/url to a favicon that will be displayed by the browser
-favicon_ico: "/assets/images/favicon.ico"
-```
-
-If the path to your favicon is `/favicon.ico`, you can leave `favicon_ico` unset.
-
-## What exactly is $$P$$?
+## Point coordinates and reference frames
 
 <figure style="margin: 1.5rem auto; width: 80%; text-align: center;">
   <img src="{{ '/assets/images/perception/pinhole-camera/image.png' | relative_url }}" alt="World and camera coordinate frames" style="display: block; width: 100%; height: auto;">
@@ -89,7 +71,7 @@ $$
 
 must use camera-frame coordinates, because $$Z$$ is depth along the camera optical axis.
 
-## 2. Why the derivation uses the camera frame
+## Camera-frame coordinates for perspective projection
 
 An image depends on where the point lies relative to the camera, not where it lies relative to an arbitrary world origin. Knowing only
 
@@ -131,7 +113,7 @@ x = \frac{X}{Z},
 y = \frac{Y}{Z}.
 $$
 
-## 3. Step-by-step derivation of the point-motion equation
+## Derivation of the point-motion equation
 
 Start from
 
@@ -352,7 +334,7 @@ $$
 
 ---
 
-## Why does rotation create a cross product?
+## Rotational motion and the cross product
 
 This comes from rigid-body kinematics.
 
@@ -401,7 +383,7 @@ This is exactly what the cross product describes.
 
 ---
 
-## 2. Your second question: is the multiplication order valid?
+## Associativity and order of matrix multiplication
 
 You wrote:
 
@@ -510,6 +492,102 @@ and
 $$
 [\omega]_\times R.
 $$
+
+## Connection between normalized and pixel interaction matrices
+
+The normalized feature is
+
+$$
+s_n=
+\begin{bmatrix}
+x \\
+y
+\end{bmatrix},
+$$
+
+while the pixel feature is
+
+$$
+s_p=
+\begin{bmatrix}
+u \\
+v
+\end{bmatrix}
+=
+\begin{bmatrix}
+f_xx+c_x \\
+f_yy+c_y
+\end{bmatrix}.
+$$
+
+Differentiate:
+
+$$
+\dot{u}=f_x\dot{x},
+\qquad
+\dot{v}=f_y\dot{y}.
+$$
+
+Therefore,
+
+$$
+\begin{bmatrix}
+\dot{u} \\
+\dot{v}
+\end{bmatrix}
+=
+\begin{bmatrix}
+f_x & 0 \\
+0 & f_y
+\end{bmatrix}
+\begin{bmatrix}
+\dot{x} \\
+\dot{y}
+\end{bmatrix}.
+$$
+
+If
+
+$$
+\dot{s}_n=L_n\nu_c,
+$$
+
+then
+
+$$
+\dot{s}_p
+=
+\begin{bmatrix}
+f_x & 0 \\
+0 & f_y
+\end{bmatrix}
+L_n\nu_c.
+$$
+
+Hence,
+
+$$
+\boxed{
+L_{\mathrm{pixel}}
+=
+\begin{bmatrix}
+f_x & 0 \\
+0 & f_y
+\end{bmatrix}
+L_n
+}.
+$$
+
+With nonzero skew, the multiplier becomes
+
+$$
+\begin{bmatrix}
+f_x & s \\
+0 & f_y
+\end{bmatrix}.
+$$
+
+This is why focal lengths appear when the lecture moves from normalized coordinates to pixel coordinates.
 
 ## References
 
