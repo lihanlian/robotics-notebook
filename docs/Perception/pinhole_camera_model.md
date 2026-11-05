@@ -61,7 +61,7 @@ In this geometry:
 
 - the **principal axis** is perpendicular to the image plane and passes through $$C$$;
 
-- the **principal point** $$p$$ is where the principal axis intersects the image plane, with pixel coordinates $$(c_x,c_y)$$;
+- the **principal point** $$p$$ is where the principal axis intersects the image plane;
 
 - the **principal plane** passes through $$C$$ and is parallel to the image plane.
 
