@@ -353,152 +353,43 @@ The dimensions make the composition explicit: $$K$$ is $$3\times3$$, $$[R\mid t]
 
 The camera projection matrix $$P$$ combines the world-to-camera transformation and the intrinsic mapping. Multiplying $$P$$ by $$P_w$$ produces the vector $$[Zu,Zv,Z]^T$$. To obtain the pixel coordinates $$(u,v)$$, divide the first two entries, $$Zu$$ and $$Zv$$, by the depth $$Z$$ stored in the third entry. This final perspective division is defined for $$Z\ne0$$; visible points in front of the camera have $$Z>0$$.
 
-## ▪ Physical and virtual image planes
-{: #physical-and-virtual-image-planes }
+## ▪ Image Planes and Coordinate Conventions
+{: #image-planes-and-coordinate-conventions }
 
-This is the key idea:
-
-A camera image is fundamentally a set of rays.
-
-The 3D point:
+In the ideal pinhole geometry, the physical sensor lies behind the camera center and receives an inverted image. With $$f=f_{\mathrm{physical}}>0$$, the physical and virtual planes lie at axial positions $$-f$$ and $$+f$$. The line through $$P_c=[X,Y,Z]^T$$ and the camera center intersects them at
 
 $$
-P_c=
-\begin{bmatrix}
-X \\
-Y \\
-Z
-\end{bmatrix}
+\underbrace{\left(-f\frac{X}{Z},-f\frac{Y}{Z},-f\right)}_{\text{physical plane}},
+\qquad
+\underbrace{\left(f\frac{X}{Z},f\frac{Y}{Z},f\right)}_{\text{virtual plane}}.
 $$
 
-creates a ray:
+These points lie on opposite sides of the camera center. The virtual plane changes the representation of projection; light is still recorded on the physical sensor. With OpenCV's camera axes ($$X$$ right, $$Y$$ down, $$Z$$ forward), a scene point in front has depth $$Z>0$$ regardless of which image plane represents its projection.
+
+The virtual plane makes the standard coordinate convention convenient:
+
+- **Simple projection equations:** its coordinates are $$(fX/Z,fY/Z)$$, without inversion signs, and division by $$f$$ gives the normalized coordinates $$x=X/Z,y=Y/Z$$.
+- **Consistent pixel directions:** with zero skew and positive $$f_x,f_y$$, a point with $$X>0$$ projects to $$u>c_x$$, and one with $$Y>0$$ projects to $$v>c_y$$, for $$Z>0$$.
+
+The same positive-sign pixel equations are compatible with the inverted physical image. For the zero-skew model, let $$x_{\mathrm{sensor}}=-fX/Z$$ measure horizontal position on the sensor along the camera's $$X$$ direction. Choosing pixel columns to increase in the opposite direction on the sensor gives
 
 $$
-\lambda
-\begin{bmatrix}
-X \\
-Y \\
-Z
-\end{bmatrix}
+u=c_x-\frac{x_{\mathrm{sensor}}}{d_x}
+=c_x+\frac{f}{d_x}\frac{X}{Z}
+=c_x+f_x\frac{X}{Z}.
 $$
 
-The physical sensor and virtual plane are just two different ways of selecting a point on this same ray.
-
----
-
-Physical plane:
-
-$$
-Z=-f
-$$
-
-gives:
-
-$$
-x=-f\frac{X}{Z}
-$$
-
-Virtual plane:
-
-$$
-Z=f
-$$
-
-gives:
-
-$$
-x=f\frac{X}{Z}
-$$
-
-They differ only by a sign.
-
-The ray itself did not change.
-
-### OpenCV coordinate conventions
-
-This coordinate convention has the following properties:
-
-### Positive depth
-
-Points in front of the camera have:
-
-$$
-Z>0
-$$
-
-instead of:
-
-$$
-Z<0
-$$
-
-### Horizontal pixel direction
-
-A point on the right gives:
-
-$$
-u>c_x
-$$
-
-which matches image intuition.
-
-### Positive focal lengths
-
-The intrinsic matrix contains positive focal lengths:
-
-$$
-f_x>0
-$$
-
-instead of negative values.
-
-This makes optimization and calibration much easier.
-
-## ▪ Optical inversion and digital image conventions
-{: #optical-inversion-and-digital-image-conventions }
-
-Optical image formation and digital image representation are separate stages:
-
-### Optical formation
-
-The lens physically forms an inverted image.
-
-### Digital image representation
-
-The camera electronics output an image array.
-
-The camera driver chooses:
-
-- where pixel $$(0,0)$$ is,
-
-- whether rows increase downward,
-
-- whether columns increase rightward.
-
-The final digital image coordinate system is what OpenCV sees.
-
-So the manufacturer or camera firmware may indeed perform operations like:
-
-- flipping,
-
-- rotating,
-
-- demosaicing,
-
-- correcting sensor orientation.
-
-But the important point is:
-
-**OpenCV calibration is performed on the final digital image coordinates.**
-
-The intrinsic matrix $$K$$ already describes the mapping between 3D rays and those pixels.
-
+The vertical relation follows similarly. The coordinate definitions account for the sign change without requiring an explicit firmware image flip. Calibration estimates $$K$$ for the final image coordinates, so the camera model must match the pixel convention of the images being used.
 
 ----
 ## ▪ References
 {: #references }
 
-- Faisal Qureshi. [Image formation and pinhole camera model](https://csundergrad.science.uoit.ca/courses/cv-notes/notebooks/01-image-formation.html). *[Computer Vision lecture notes](https://csundergrad.science.uoit.ca/courses/cv-notes/)*, Ontario Tech University. The ideal pinhole-camera geometry figure is originally from *Multiple View Geometry in Computer Vision*, Second Edition.
+- Faisal Qureshi. [Image formation and pinhole camera model](https://csundergrad.science.uoit.ca/courses/cv-notes/notebooks/01-image-formation.html). *[Computer Vision lecture notes](https://csundergrad.science.uoit.ca/courses/cv-notes/)*, Ontario Tech University.
+
+- OpenCV. [Perspective-n-Point (PnP) pose computation](https://docs.opencv.org/4.13.0/d5/d1f/calib3d_solvePnP.html). *OpenCV 4.13.0 documentation*.
+
+- [Imaging](https://visionbook.mit.edu/imaging.html). *Foundations of Computer Vision*, Chapter 5.
 
 - <i class="fab fa-youtube" aria-hidden="true"></i> [Computer Vision: The Camera Matrix](https://www.youtube.com/watch?v=Hz8kz5aeQ44&t=20s).
 
