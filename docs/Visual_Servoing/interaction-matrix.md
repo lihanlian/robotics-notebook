@@ -597,5 +597,5 @@ This is why focal lengths appear when the lecture moves from normalized coordina
 ## ▪ References
 {: #references }
 
-- <i class="fab fa-youtube" aria-hidden="true"></i> [Video 1 (YouTube, starts at 0:22)](https://www.youtube.com/watch?v=s_0DdxHjrfA&t=22s).
-- <i class="fab fa-youtube" aria-hidden="true"></i> [Video 2 (YouTube, playlist item 61)](https://www.youtube.com/watch?v=XDE6oxEJn3c&list=PLjoIYgWzjQHK8G2O56jsu56dmjWiipguv&index=61).
+- <i class="fab fa-youtube" aria-hidden="true"></i> [Image-Based Visual Servoing - Robot Control Part 1](https://www.youtube.com/watch?v=s_0DdxHjrfA&t=22s).
+- <i class="fab fa-youtube" aria-hidden="true"></i> [Image-Based Visual Servoing - Robot Control Part 2](https://www.youtube.com/watch?v=XDE6oxEJn3c&list=PLjoIYgWzjQHK8G2O56jsu56dmjWiipguv&index=61).

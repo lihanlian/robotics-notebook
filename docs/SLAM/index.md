@@ -50,4 +50,5 @@ The [Navigation]({% link docs/Navigation/index.md %}) chapter builds on these po
 
 - Cadena et al. [Past, Present, and Future of Simultaneous Localization and Mapping](https://arxiv.org/abs/1606.05830).
 - [SLAM Tutorial](https://www.cs.columbia.edu/~allen/F19/NOTES/slam_pka.pdf), Columbia University course slides.
-- <i class="fab fa-youtube" aria-hidden="true"></i> [SLAM frontend and backend overview (YouTube)](https://www.youtube.com/watch?v=BuRCJ2fegcc).
+- <i class="fab fa-youtube" aria-hidden="true"></i> [SLAM - 5 Minutes with Cyrill (SLAM frontend and backend overview)](https://www.youtube.com/watch?v=BuRCJ2fegcc).
+- <i class="fab fa-youtube" aria-hidden="true"></i> [Introduction to SLAM from a Photogrammetric Perspective](https://www.youtube.com/watch?v=NW8hUcbjuIQ&list=PLgnQpQtFTOGQEXN2Qo571uvwIGNGAM8uf&index=26).
