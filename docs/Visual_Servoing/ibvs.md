@@ -1,7 +1,7 @@
 ---
 title: IBVS
 parent: Visual Servoing
-nav_order: 1
+nav_order: 2
 ---
 
 # IBVS

@@ -1,7 +1,7 @@
 ---
 title: PBVS
 parent: Visual Servoing
-nav_order: 2
+nav_order: 3
 ---
 
 # PBVS
