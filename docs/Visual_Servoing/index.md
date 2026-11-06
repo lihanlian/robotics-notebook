@@ -18,7 +18,8 @@ This section covers vision-based robot control methods.
 
 ---
 
-## Point coordinates and reference frames
+## ▪ Point coordinates and reference frames
+{: #point-coordinates-and-reference-frames }
 
 <figure style="margin: 1.5rem auto; width: 80%; text-align: center;">
   <img src="{{ '/assets/images/perception/pinhole-camera/image.png' | relative_url }}" alt="World and camera coordinate frames" style="display: block; width: 100%; height: auto;">
@@ -71,7 +72,8 @@ $$
 
 must use camera-frame coordinates, because $$Z$$ is depth along the camera optical axis.
 
-## Camera-frame coordinates for perspective projection
+## ▪ Camera-frame coordinates for perspective projection
+{: #camera-frame-coordinates-for-perspective-projection }
 
 An image depends on where the point lies relative to the camera, not where it lies relative to an arbitrary world origin. Knowing only
 
@@ -113,7 +115,8 @@ x = \frac{X}{Z},
 y = \frac{Y}{Z}.
 $$
 
-## Derivation of the point-motion equation
+## ▪ Derivation of the point-motion equation
+{: #derivation-of-the-point-motion-equation }
 
 Start from
 
@@ -334,7 +337,8 @@ $$
 
 ---
 
-## Rotational motion and the cross product
+## ▪ Rotational motion and the cross product
+{: #rotational-motion-and-the-cross-product }
 
 This comes from rigid-body kinematics.
 
@@ -383,7 +387,8 @@ This is exactly what the cross product describes.
 
 ---
 
-## Associativity and order of matrix multiplication
+## ▪ Associativity and order of matrix multiplication
+{: #associativity-and-order-of-matrix-multiplication }
 
 You wrote:
 
@@ -493,7 +498,8 @@ $$
 [\omega]_\times R.
 $$
 
-## Connection between normalized and pixel interaction matrices
+## ▪ Connection between normalized and pixel interaction matrices
+{: #connection-between-normalized-and-pixel-interaction-matrices }
 
 The normalized feature is
 
@@ -589,7 +595,8 @@ $$
 
 This is why focal lengths appear when the lecture moves from normalized coordinates to pixel coordinates.
 
-## References
+## ▪ References
+{: #references }
 
 - <i class="fab fa-youtube" aria-hidden="true"></i> [Video 1 (YouTube, starts at 0:22)](https://www.youtube.com/watch?v=s_0DdxHjrfA&t=22s).
 - <i class="fab fa-youtube" aria-hidden="true"></i> [Video 2 (YouTube, playlist item 61)](https://www.youtube.com/watch?v=XDE6oxEJn3c&list=PLjoIYgWzjQHK8G2O56jsu56dmjWiipguv&index=61).

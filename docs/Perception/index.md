@@ -6,17 +6,28 @@ nav_group: perception_navigation
 ---
 
 # Computer Vision
+{: .no_toc }
 
 You specify the layout for a page in its [front matter]. Just the Docs has a `default` layout with a sidebar, used for almost all pages in the theme docs, and a `minimal` layout that omits the sidebar.
 {: .fs-6 .fw-300 }
 
-## The layout concept
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
+
+## ▪ The layout concept
+{: #the-layout-concept }
 
 See the [Jekyll docs page about layouts] for an explanation of the general idea of layouts and how to specify them.
 
 You can use [Jekyll's front matter defaults] to specify the same layout for many pages.
 
-## The `default` layout
+## ▪ The `default` layout
+{: #the-default-layout }
 
 This page uses the default layout. This site configures `layout: default` as a [front matter default](https://jekyllrb.com/docs/configuration/front-matter-defaults/) value for all pages in the `docs` directory.
 
@@ -26,11 +37,13 @@ All pages except top-level pages automatically have a list of  so-called *breadc
 
 Each page that has child pages generally has a list of links to those pages (you can suppress it by `has_toc: false` in the front matter). It shows the list as a *table of contents* below the main content.
 
-## The `minimal` layout
+## ▪ The `minimal` layout
+{: #the-minimal-layout }
 
 The `minimal` layout differs from the default layout by omitting the sidebar and navigation panel. Use it only when you explicitly want a clean content-only page.
 
-## Selectively hiding or showing the sidebar
+## ▪ Selectively hiding or showing the sidebar
+{: #selectively-hiding-or-showing-the-sidebar }
 
 [Jekyll's front matter defaults] can be used to apply the `minimal` layout for many pages. But there are also other variables that can control the page layout. In `_config.yml`, you can set `nav_enabled: false` to disable the sidebar navigation panel across the entire site. This can then be selectively enabled on a page-by-page basis by assigning the `nav_enabled: true` page [front matter] variable. For instance, this could be used to enable sidebar navigation on a home page while all other pages have sidebar navigation disabled.
 
@@ -43,9 +56,18 @@ nav_enabled: true
 
 ```
 
-## Other layouts
+## ▪ Other layouts
+{: #other-layouts }
 
 Just the Docs has further layouts: `about`, `home`, `page`, and `post`. Currently, they are all based on the `default` layout. See the [Jekyll docs about inheritance] for how to customize them.
+
+## ▪ References
+{: #references }
+
+- [Jekyll: Front Matter][front matter].
+- [Jekyll: Layouts][Jekyll docs page about layouts].
+- [Jekyll: Front Matter Defaults][Jekyll's front matter defaults].
+- [Jekyll: Layout Inheritance][Jekyll docs about inheritance].
 
 [front matter]: https://jekyllrb.com/docs/front-matter/ "Jekyll docs about front matter"
 [Jekyll docs page about layouts]: https://jekyllrb.com/docs/layouts/ "Jekyll docs about layouts"

@@ -18,7 +18,8 @@ Position-Based Visual Servoing (PBVS) estimates the target pose and controls the
 
 ---
 
-## Core idea
+## ▪ Core idea
+{: #core-idea }
 
 PBVS closes the loop on 3D pose error:
 
@@ -26,14 +27,21 @@ PBVS closes the loop on 3D pose error:
 2. Compute pose error in SE(3).
 3. Apply a control law to reduce translational and rotational error.
 
-## Typical advantages
+## ▪ Typical advantages
+{: #typical-advantages }
 
 - Intuitive geometric interpretation
 - Smooth Cartesian trajectories
 - Easy integration with model-based controllers
 
-## Typical challenges
+## ▪ Typical challenges
+{: #typical-challenges }
 
 - Sensitive to pose-estimation errors
 - Requires camera calibration accuracy
 - Can degrade with poor visual features
+
+## ▪ References
+{: #references }
+
+- François Chaumette and Seth Hutchinson. [Visual Servo Control, Part I: Basic Approaches](https://web.mit.edu/amcp/OldFiles/drg/Chaumette_Part_I.pdf). *IEEE Robotics & Automation Magazine*, 2006.

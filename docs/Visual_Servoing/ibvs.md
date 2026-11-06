@@ -18,7 +18,8 @@ Image-Based Visual Servoing (IBVS) uses image-space features directly in the fee
 
 ---
 
-## 1. Clean up the notation first
+## ▪ 1. Clean up the notation first
+{: id="1-clean-up-the-notation-first" }
 
 The lecture slides use the symbol $$\mathbf{v}$$ for the six-dimensional camera velocity. To avoid confusing this symbol with the vertical pixel coordinate $$v$$, denote the camera twist by
 
@@ -90,7 +91,8 @@ $$
 
 where $$L_s\in\mathbb{R}^{2\times6}$$ is the interaction matrix, or image Jacobian, for one point feature.
 
-## 2. Why a fixed point moves in the camera frame
+## ▪ 2. Why a fixed point moves in the camera frame
+{: id="2-why-a-fixed-point-moves-in-the-camera-frame" }
 
 Suppose the world point is fixed but the camera moves. A point expressed in the camera frame is generally
 
@@ -128,7 +130,8 @@ The minus signs appear because the expression describes a fixed world point as o
 > \boldsymbol{\omega}_c\times P.
 > $$
 
-## 3. Expand the rotational cross product
+## ▪ 3. Expand the rotational cross product
+{: id="3-expand-the-rotational-cross-product" }
 
 The cross product is
 
@@ -190,7 +193,8 @@ $$
 }.
 $$
 
-## 4. Understanding each term physically
+## ▪ 4. Understanding each term physically
+{: id="4-understanding-each-term-physically" }
 
 Consider
 
@@ -220,7 +224,8 @@ $$
 
 contains the effects of translation along $$z$$, rotation about $$x$$, and rotation about $$y$$.
 
-## 5. Define the normalized image coordinates
+## ▪ 5. Define the normalized image coordinates
+{: id="5-define-the-normalized-image-coordinates" }
 
 The slides first use normalized image coordinates:
 
@@ -252,7 +257,8 @@ $$
 \end{bmatrix}.
 $$
 
-## 6. Derive $$\dot{x}$$ using the quotient rule
+## ▪ 6. Derive $$\dot{x}$$ using the quotient rule
+{: id="6-derive-dotx-using-the-quotient-rule" }
 
 Start from
 
@@ -347,7 +353,8 @@ $$
 
 There is no $$v_y$$ term because a pure camera translation along $$y$$ does not directly change the normalized horizontal coordinate $$x$$.
 
-## 7. Write the first row of the interaction matrix
+## ▪ 7. Write the first row of the interaction matrix
+{: id="7-write-the-first-row-of-the-interaction-matrix" }
 
 Using the velocity ordering
 
@@ -400,7 +407,8 @@ y
 \end{bmatrix}.
 $$
 
-## 8. Derive $$\dot{y}$$
+## ▪ 8. Derive $$\dot{y}$$
+{: id="8-derive-doty" }
 
 Start from
 
@@ -493,7 +501,8 @@ $$
 }.
 $$
 
-## 9. Write the second row of the interaction matrix
+## ▪ 9. Write the second row of the interaction matrix
+{: id="9-write-the-second-row-of-the-interaction-matrix" }
 
 The previous equation becomes
 
@@ -536,7 +545,8 @@ L_y
 \end{bmatrix}.
 $$
 
-## 10. The complete interaction matrix
+## ▪ 10. The complete interaction matrix
+{: id="10-the-complete-interaction-matrix" }
 
 Stack the two rows:
 
@@ -592,3 +602,8 @@ y
 $$
 
 This is the standard point-feature interaction matrix for normalized image coordinates.
+
+## ▪ References
+{: #references }
+
+- François Chaumette and Seth Hutchinson. [Visual Servo Control, Part I: Basic Approaches](https://web.mit.edu/amcp/OldFiles/drg/Chaumette_Part_I.pdf). *IEEE Robotics & Automation Magazine*, 2006.
