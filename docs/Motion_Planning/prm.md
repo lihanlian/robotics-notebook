@@ -1,7 +1,7 @@
 ---
 title: PRM
 parent: Motion Planning
-nav_order: 2
+nav_order: 3
 ---
 
 # PRM

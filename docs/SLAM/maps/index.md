@@ -34,3 +34,4 @@ Map representation is a separate choice from the [SLAM backend]({% link docs/SLA
 {: #references }
 
 - Cadena et al. [Past, Present, and Future of Simultaneous Localization and Mapping](https://arxiv.org/abs/1606.05830). See the discussion of metric map representations.
+- [Nav2: Environmental Representation](https://docs.nav2.org/jazzy/getting_started/navigation_concepts/environmental_representation/). Overview of environmental representations, layered costmaps, and their use in navigation.

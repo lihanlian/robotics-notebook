@@ -15,4 +15,4 @@ Topics include:
 - Global planning, local planning, and path following.
 - Goal tolerances, replanning, recovery behaviors, and evaluation.
 
-Shared planning algorithms belong in [Motion Planning]({% link docs/Planning/index.md %}), and tracking-controller foundations belong in [Control]({% link docs/Control/index.md %}). [SLAM]({% link docs/SLAM/index.md %}) covers the localization and mapping inputs used by the navigation system.
+Shared planning algorithms belong in [Motion Planning]({% link docs/Motion_Planning/index.md %}), and tracking-controller foundations belong in [Control]({% link docs/Control/index.md %}). [SLAM]({% link docs/SLAM/index.md %}) covers the localization and mapping inputs used by the navigation system.

@@ -3,13 +3,11 @@ title: Computer Vision
 layout: default
 nav_order: 4
 nav_group: perception_navigation
+has_toc: false
 ---
 
 # Computer Vision
 {: .no_toc }
-
-You specify the layout for a page in its [front matter]. Just the Docs has a `default` layout with a sidebar, used for almost all pages in the theme docs, and a `minimal` layout that omits the sidebar.
-{: .fs-6 .fw-300 }
 
 ## Table of contents
 {: .no_toc .text-delta }
@@ -19,57 +17,36 @@ You specify the layout for a page in its [front matter]. Just the Docs has a `de
 
 ---
 
-## ▪ The layout concept
-{: #the-layout-concept }
+## ▪ Overview
+{: #overview }
 
-See the [Jekyll docs page about layouts] for an explanation of the general idea of layouts and how to specify them.
+Computer vision extracts information about the world from images. In robotics, it helps estimate camera motion, locate objects, and interpret the scene so the robot can act on it. This chapter begins with the geometry connecting 3D points to image measurements.
 
-You can use [Jekyll's front matter defaults] to specify the same layout for many pages.
+- **Camera modeling:** describe how points in space project onto an image.
+- **Calibration:** estimate the parameters needed to use that model with a real camera.
+- **Pose estimation:** infer an object's or camera's position and orientation from observations.
 
-## ▪ The `default` layout
-{: #the-default-layout }
+## ▪ Components and Topics
+{: #components-and-topics }
 
-This page uses the default layout. This site configures `layout: default` as a [front matter default](https://jekyllrb.com/docs/configuration/front-matter-defaults/) value for all pages in the `docs` directory.
+- [Pinhole Camera Model]({% link docs/Perception/pinhole_camera_model.md %}) introduces perspective projection, homogeneous coordinates, and intrinsic and extrinsic camera parameters.
+- [Camera Calibration]({% link docs/Perception/camera_calibration.md %}) connects known 3D points to measured pixels to estimate camera intrinsics and the camera's pose for each calibration view.
+- [Pose Estimation]({% link docs/Perception/pose_estimation.md %}) outlines how features and model correspondences support estimating, refining, and tracking 3D pose.
 
-The default layout of Just the Docs is a *responsive* layout: on medium and larger width displays, it displays a sidebar, including a navigation panel; on smaller width displays, the sidebar is automatically hidden under a button.
+Study these topics in this order: first understand the projection model, then identify its parameters, and finally use image observations to estimate pose. A pixel identifies a viewing ray; recovering depth requires additional information.
 
-All pages except top-level pages automatically have a list of  so-called *breadcrumbs*: links to their parent pages and any higher-level ancestors. They show the breadcrumbs above the main content of the page.
+## ▪ Related Foundations
+{: #related-foundations }
 
-Each page that has child pages generally has a list of links to those pages (you can suppress it by `has_toc: false` in the front matter). It shows the list as a *table of contents* below the main content.
+- Coordinate frames, rotations, translations, and rigid transformations.
+- Linear algebra, homogeneous coordinates, and projective geometry.
+- Feature detection, correspondence matching, and robust estimation.
+- Measurement uncertainty and reprojection error.
 
-## ▪ The `minimal` layout
-{: #the-minimal-layout }
-
-The `minimal` layout differs from the default layout by omitting the sidebar and navigation panel. Use it only when you explicitly want a clean content-only page.
-
-## ▪ Selectively hiding or showing the sidebar
-{: #selectively-hiding-or-showing-the-sidebar }
-
-[Jekyll's front matter defaults] can be used to apply the `minimal` layout for many pages. But there are also other variables that can control the page layout. In `_config.yml`, you can set `nav_enabled: false` to disable the sidebar navigation panel across the entire site. This can then be selectively enabled on a page-by-page basis by assigning the `nav_enabled: true` page [front matter] variable. For instance, this could be used to enable sidebar navigation on a home page while all other pages have sidebar navigation disabled.
-
-```yaml
----
-layout: default
-title: Home
-nav_enabled: true
----
-
-```
-
-## ▪ Other layouts
-{: #other-layouts }
-
-Just the Docs has further layouts: `about`, `home`, `page`, and `post`. Currently, they are all based on the `default` layout. See the [Jekyll docs about inheritance] for how to customize them.
+Visual [SLAM]({% link docs/SLAM/index.md %}) uses camera models and image correspondences to estimate motion and build maps. Object pose estimates also support grasping and visual servoing.
 
 ## ▪ References
 {: #references }
 
-- [Jekyll: Front Matter][front matter].
-- [Jekyll: Layouts][Jekyll docs page about layouts].
-- [Jekyll: Front Matter Defaults][Jekyll's front matter defaults].
-- [Jekyll: Layout Inheritance][Jekyll docs about inheritance].
-
-[front matter]: https://jekyllrb.com/docs/front-matter/ "Jekyll docs about front matter"
-[Jekyll docs page about layouts]: https://jekyllrb.com/docs/layouts/ "Jekyll docs about layouts"
-[Jekyll's front matter defaults]: https://jekyllrb.com/docs/configuration/front-matter-defaults/ "Jekyll docs about front matter defaults"
-[Jekyll docs about inheritance]: https://jekyllrb.com/docs/layouts/#inheritance "Jekyll docs about inheritance"
+- OpenCV. [Camera Calibration and 3D Reconstruction](https://docs.opencv.org/4.13.0/d9/d0c/group__calib3d.html). *OpenCV 4.13.0 documentation*.
+- Richard Szeliski. [Computer Vision: Algorithms and Applications](https://szeliski.org/Book/), second edition.
