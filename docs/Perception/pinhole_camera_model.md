@@ -22,7 +22,7 @@ The pinhole camera model describes perspective projection from a 3D point to a 2
 
 <figure style="margin: 1.5rem auto; width: 70%; text-align: center;">
   <img src="{{ '/assets/images/perception/pinhole-camera/pinhole4.png' | relative_url }}" alt="A 3D point projected through a pinhole onto physical and virtual image planes" style="display: block; width: 100%; height: auto;">
-  <figcaption style="margin-top: 0.5rem; font-style: italic;">Perspective projection using physical and virtual image planes. Source: <a href="https://csundergrad.science.uoit.ca/courses/cv-notes/notebooks/01-image-formation.html">Image Formation</a>.</figcaption>
+  <figcaption style="margin-top: 0.5rem; font-style: italic;">Perspective projection using physical and virtual image planes. Source: <a href="https://csundergrad.science.uoit.ca/courses/cv-notes/notebooks/01-image-formation.html">Image formation and pinhole camera model</a>, Faisal Qureshi, Ontario Tech University.</figcaption>
 </figure>
 
 By similar triangles, the ray from $$P_c$$ through the camera center intersects the virtual image plane at
@@ -51,7 +51,7 @@ $$
 
 <figure style="margin: 1.5rem auto; width: 75%; text-align: center;">
   <img src="{{ '/assets/images/perception/pinhole-camera/camera-geometry.png' | relative_url }}" alt="Pinhole camera geometry showing the camera center, image plane, principal axis, and principal point" style="display: block; width: 100%; height: auto;">
-  <figcaption style="margin-top: 0.5rem; font-style: italic;">Ideal pinhole-camera geometry. Image from <cite>Multiple View Geometry in Computer Vision</cite>, Second Edition, via <a href="https://csundergrad.science.uoit.ca/courses/cv-notes/notebooks/01-image-formation.html">Image Formation</a>.</figcaption>
+  <figcaption style="margin-top: 0.5rem; font-style: italic;">Ideal pinhole-camera geometry.<br>Source: <a href="https://csundergrad.science.uoit.ca/courses/cv-notes/notebooks/01-image-formation.html">Image formation and pinhole camera model</a>, Faisal Qureshi, Ontario Tech University.</figcaption>
 </figure>
 
 In this geometry:
@@ -132,6 +132,22 @@ Homogeneous coordinates let us postpone the division by depth until after the ma
 {: #camera-parameters }
 
 Intrinsic parameters describe how a viewing ray maps to the pixel coordinate system. Extrinsic parameters describe the change of coordinates from the world frame to the camera frame.
+
+### Focal Length and Pixel Units
+
+The physical focal length $$f_{\mathrm{physical}}$$ is measured in length units, typically millimetres, while $$f_x,f_y$$ express it in horizontal and vertical pixels. For pixel pitches $$d_x,d_y$$ measured in millimetres per pixel,
+
+$$
+\boxed{
+f_x=\frac{f_{\mathrm{physical}}}{d_x}
+},
+\qquad
+\boxed{
+f_y=\frac{f_{\mathrm{physical}}}{d_y}
+}.
+$$
+
+Different pixel pitches or unequal image scaling can give $$f_x\ne f_y$$. Resizing changes both the focal lengths and principal-point coordinates in **pixel units**, so the intrinsic matrix must be updated accordingly. In practice, calibration estimates $$f_x,f_y$$ from image measurements; for nominally square pixels without unequal resizing, they are usually close but need not be forced equal.
 
 ### Intrinsic Parameters
 
@@ -478,188 +494,11 @@ But the important point is:
 The intrinsic matrix $$K$$ already describes the mapping between 3D rays and those pixels.
 
 
-## ▪ Physical focal length $$f$$
-{: #physical-focal-length-f }
-
-The physical focal length is a length, commonly measured in millimetres:
-
-$$
-f_{\mathrm{physical}}
-\quad [\mathrm{mm}].
-$$
-
-For example,
-
-$$
-f_{\mathrm{physical}}=4\ \mathrm{mm}.
-$$
-
-Pixel coordinates $$u$$ and $$v$$ are measured in pixels, so a focal length expressed in millimetres cannot be inserted directly into
-
-$$
-u=f_x\frac{X}{Z}+c_x.
-$$
-
-It must first be converted into pixel units.
-
-## ▪ Focal lengths in pixels
-{: #focal-lengths-in-pixels }
-
-The quantities $$f_x$$ and $$f_y$$ are focal lengths measured in horizontal and vertical pixels:
-
-$$
-f_x\quad[\mathrm{pixels}],
-\qquad
-f_y\quad[\mathrm{pixels}].
-$$
-
-Let the physical pixel pitches be
-
-$$
-d_x\quad[\mathrm{mm/pixel}],
-\qquad
-d_y\quad[\mathrm{mm/pixel}].
-$$
-
-Then
-
-$$
-\boxed{
-f_x=\frac{f_{\mathrm{physical}}}{d_x}
-},
-\qquad
-\boxed{
-f_y=\frac{f_{\mathrm{physical}}}{d_y}
-}.
-$$
-
-Equivalently, define pixel densities
-
-$$
-m_x=\frac{1}{d_x}
-\quad[\mathrm{pixels/mm}],
-\qquad
-m_y=\frac{1}{d_y}
-\quad[\mathrm{pixels/mm}].
-$$
-
-Then
-
-$$
-\boxed{
-f_x=f_{\mathrm{physical}}m_x
-},
-\qquad
-\boxed{
-f_y=f_{\mathrm{physical}}m_y
-}.
-$$
-
-Some texts use $$\alpha_x$$ and $$\alpha_y$$ instead of $$f_x$$ and $$f_y$$:
-
-$$
-\alpha_x=fm_x,
-\qquad
-\alpha_y=fm_y.
-$$
-
-These quantities have the same role as the OpenCV notation $$f_x,f_y$$.
-
-### Numerical conversion example
-
-Suppose
-
-$$
-f_{\mathrm{physical}}=4\ \mathrm{mm},
-$$
-
-with pixel pitches
-
-$$
-d_x=0.005\ \mathrm{mm/pixel},
-\qquad
-d_y=0.0048\ \mathrm{mm/pixel}.
-$$
-
-Then
-
-$$
-f_x=\frac{4}{0.005}=800\ \mathrm{pixels},
-$$
-
-and
-
-$$
-f_y=\frac{4}{0.0048}\approx833.33\ \mathrm{pixels}.
-$$
-
-The pixel projection is therefore
-
-$$
-u=800\frac{X}{Z}+c_x,
-$$
-
-$$
-v=833.33\frac{Y}{Z}+c_y.
-$$
-
-Because $$X$$ and $$Z$$ use the same length unit,
-
-$$
-\frac{X}{Z}
-$$
-
-is dimensionless. Consequently, $$f_x(X/Z)$$ has units of pixels, matching $$u$$.
-
-## ▪ Independent horizontal and vertical focal lengths
-{: #independent-horizontal-and-vertical-focal-lengths }
-
-There are several practical reasons.
-
-### Different pixel pitch
-
-The horizontal and vertical physical pixel spacing can differ:
-
-$$
-d_x\neq d_y.
-$$
-
-Then
-
-$$
-f_x\neq f_y.
-$$
-
-### Image resizing
-
-If an image is resized with horizontal and vertical scale factors $$r_x,r_y$$, the intrinsic parameters change as
-
-$$
-f_x'=r_xf_x,
-\qquad
-f_y'=r_yf_y,
-$$
-
-$$
-c_x'=r_xc_x,
-\qquad
-c_y'=r_yc_y.
-$$
-
-### Calibration estimates the pixel geometry directly
-
-In practice, $$f_x$$ and $$f_y$$ are normally estimated directly through calibration, rather than reconstructed from nominal lens focal length and sensor pitch. This captures small manufacturing and processing differences. For nominally square pixels,
-
-$$
-f_x\approx f_y,
-$$
-
-but they need not be forced to be exactly equal.
-
-
 ----
 ## ▪ References
 {: #references }
+
+- Faisal Qureshi. [Image formation and pinhole camera model](https://csundergrad.science.uoit.ca/courses/cv-notes/notebooks/01-image-formation.html). *[Computer Vision lecture notes](https://csundergrad.science.uoit.ca/courses/cv-notes/)*, Ontario Tech University. The ideal pinhole-camera geometry figure is originally from *Multiple View Geometry in Computer Vision*, Second Edition.
 
 - <i class="fab fa-youtube" aria-hidden="true"></i> [Computer Vision: The Camera Matrix](https://www.youtube.com/watch?v=Hz8kz5aeQ44&t=20s).
 
