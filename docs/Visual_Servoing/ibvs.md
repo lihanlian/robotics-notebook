@@ -1,13 +1,13 @@
 ---
 title: IBVS
 parent: Visual Servoing
-nav_order: 2
+nav_order: 1
 ---
 
 # IBVS
 {: .no_toc }
 
-Image-Based Visual Servoing (IBVS) uses image-space features directly in the feedback loop.
+Image-Based Visual Servoing (IBVS) uses image-space features directly in the feedback loop. This page derives the interaction matrix relating camera velocity to the motion of a point feature.
 {: .fs-6 .fw-300 }
 
 ## Table of contents
@@ -18,592 +18,238 @@ Image-Based Visual Servoing (IBVS) uses image-space features directly in the fee
 
 ---
 
-## ▪ 1. Clean up the notation first
-{: id="1-clean-up-the-notation-first" }
+## ▪ Coordinate frames and notation
+{: #coordinate-frames-and-notation }
 
-The lecture slides use the symbol $$\mathbf{v}$$ for the six-dimensional camera velocity. To avoid confusing this symbol with the vertical pixel coordinate $$v$$, denote the camera twist by
+<figure style="margin: 1.5rem auto; width: 80%; text-align: center;">
+  <img src="{{ '/assets/images/perception/pinhole-camera/image.png' | relative_url }}" alt="World and camera coordinate frames" style="display: block; width: 100%; height: auto;">
+  <figcaption style="margin-top: 0.5rem; font-style: italic;">Coordinate illustration.</figcaption>
+</figure>
+
+Let $$P_w$$ be a fixed point in **world coordinates** and $$C_w$$ the camera center in the **same frame**. The rotation $$R_{cw}$$ converts world-frame vectors into camera coordinates, so the point in the camera frame is
+
+$$
+\boxed{P_c=R_{cw}(P_w-C_w)},
+\qquad
+P_c=\begin{bmatrix}X & Y & Z\end{bmatrix}^{T}.
+$$
+
+Perspective projection uses these camera-relative coordinates: $$X$$ and $$Y$$ describe transverse displacement, and $$Z$$ is depth along the optical axis. **World coordinates alone do not determine the image location; the camera pose is also required.**
+
+Write the camera twist as
 
 $$
 \boldsymbol{\nu}_c
-=
-\begin{bmatrix}
+=\begin{bmatrix}
 v_x & v_y & v_z & \omega_x & \omega_y & \omega_z
 \end{bmatrix}^{T}.
 $$
 
-The first three components are translational velocity,
+Its first three components form the camera-center velocity $$\mathbf{v}_c$$, and the last three form the camera angular velocity $$\boldsymbol{\omega}_c$$. Both are expressed in the **camera frame**. The symbol $$\boldsymbol{\nu}_c$$ distinguishes this six-dimensional velocity from the vertical **pixel coordinate** $$v$$.
+
+## ▪ Camera-frame point motion
+{: #camera-frame-point-motion }
+
+Although the scene point is stationary, its camera-frame coordinates change as the camera moves. Differentiate $$P_c=R_{cw}(P_w-C_w)$$ with $$\dot P_w=0$$:
 
 $$
-\mathbf{v}_c
-=
-\begin{bmatrix}
-v_x \\
-v_y \\
-v_z
+\dot P_c
+=\dot R_{cw}(P_w-C_w)-R_{cw}\dot C_w.
+$$
+
+The camera translational velocity and rotation derivative satisfy
+
+$$
+\boxed{\mathbf{v}_c=R_{cw}\dot C_w},
+\qquad
+\boxed{\dot R_{cw}=-[\boldsymbol{\omega}_c]_\times R_{cw}},
+$$
+
+where the skew-symmetric matrix represents the cross product:
+
+$$
+[\boldsymbol{\omega}_c]_\times
+=\begin{bmatrix}
+0 & -\omega_z & \omega_y \\
+\omega_z & 0 & -\omega_x \\
+-\omega_y & \omega_x & 0
 \end{bmatrix},
+\qquad
+[\boldsymbol{\omega}_c]_\times P_c
+=\boldsymbol{\omega}_c\times P_c.
 $$
 
-and the final three components are angular velocity,
+Substituting gives
 
 $$
-\boldsymbol{\omega}_c
-=
-\begin{bmatrix}
-\omega_x \\
-\omega_y \\
-\omega_z
-\end{bmatrix}.
+\begin{aligned}
+\dot P_c
+&=-[\boldsymbol{\omega}_c]_\times R_{cw}(P_w-C_w)-\mathbf{v}_c \\
+&=-[\boldsymbol{\omega}_c]_\times P_c-\mathbf{v}_c.
+\end{aligned}
 $$
 
-A fixed 3D point, expressed in the current camera frame, is
+Matrix multiplication is associative, so $$R_{cw}(P_w-C_w)$$ can be evaluated first; the multiplication order remains unchanged.
+
+Therefore,
 
 $$
-P
-=
-\begin{bmatrix}
-X \\
-Y \\
-Z
-\end{bmatrix}.
+\boxed{\dot P_c=-\mathbf{v}_c-\boldsymbol{\omega}_c\times P_c}.
 $$
 
-Its normalized image coordinates are
-
-$$
-s
-=
-\begin{bmatrix}
-x \\
-y
-\end{bmatrix}
-=
-\begin{bmatrix}
-X/Z \\
-Y/Z
-\end{bmatrix}.
-$$
-
-The objective is to derive
-
-$$
-\dot{s}=L_s\boldsymbol{\nu}_c,
-$$
-
-where $$L_s\in\mathbb{R}^{2\times6}$$ is the interaction matrix, or image Jacobian, for one point feature.
-
-## ▪ 2. Why a fixed point moves in the camera frame
-{: id="2-why-a-fixed-point-moves-in-the-camera-frame" }
-
-Suppose the world point is fixed but the camera moves. A point expressed in the camera frame is generally
-
-$$
-P_c=R_{cw}(P_w-C_w),
-$$
-
-where $$P_w$$ is the fixed world point, $$C_w$$ is the camera center in world coordinates, and $$R_{cw}$$ rotates world-frame vectors into camera coordinates.
-
-Even though $$P_w$$ is fixed, $$P_c$$ changes because the camera coordinate frame moves. The rigid-body point-motion equation is
-
-$$
-\boxed{
-\dot{P}
-=
--\mathbf{v}_c
--
-\boldsymbol{\omega}_c\times P
-}.
-$$
-
-The minus signs appear because the expression describes a fixed world point as observed from a moving camera:
+The negative signs describe a fixed world point observed from a moving camera:
 
 - If the camera translates right, the fixed point appears to move left.
-
 - If the camera rotates in one direction, the scene appears to rotate in the opposite direction.
 
-> A notation such as $$\dot{P}=-\mathbf{v}_{\mathrm{cam}}\times P$$ is often shorthand for the action of a six-dimensional twist. An ordinary cross product is only defined for two 3D vectors. The explicit and clearer form is
->
-> $$
-> \dot{P}
-> =
-> -\mathbf{v}_c
-> -
-> \boldsymbol{\omega}_c\times P.
-> $$
-
-## ▪ 3. Expand the rotational cross product
-{: id="3-expand-the-rotational-cross-product" }
-
-The cross product is
-
-$$
-\boldsymbol{\omega}_c\times P
-=
-\begin{bmatrix}
-\omega_yZ-\omega_zY \\
-\omega_zX-\omega_xZ \\
-\omega_xY-\omega_yX
-\end{bmatrix}.
-$$
-
-Therefore,
-
-$$
--\boldsymbol{\omega}_c\times P
-=
-\begin{bmatrix}
--\omega_yZ+\omega_zY \\
--\omega_zX+\omega_xZ \\
--\omega_xY+\omega_yX
-\end{bmatrix}.
-$$
-
-Adding translation gives
-
-$$
-\dot{P}
-=
--\mathbf{v}_c
--
-\boldsymbol{\omega}_c\times P,
-$$
-
-so the three coordinate equations are
+In components, the same equation is
 
 $$
 \boxed{
-\dot{X}
-=
--v_x-\omega_yZ+\omega_zY
-},
+\begin{aligned}
+\dot X&=-v_x-\omega_yZ+\omega_zY, \\
+\dot Y&=-v_y-\omega_zX+\omega_xZ, \\
+\dot Z&=-v_z-\omega_xY+\omega_yX.
+\end{aligned}
+}
 $$
+
+## ▪ Perspective projection and image velocity
+{: #perspective-projection-and-image-velocity }
+
+The normalized image coordinates are
+
+$$
+x=\frac{X}{Z},\qquad y=\frac{Y}{Z},\qquad
+s=\begin{bmatrix}x & y\end{bmatrix}^{T}.
+$$
+
+They describe projection onto a virtual image plane at unit distance from the camera center, **with focal-length scaling removed**.
+
+### Horizontal image velocity
+{: #horizontal-image-velocity }
+
+Apply the quotient rule and use $$X=xZ$$:
+
+$$
+\dot x=\frac{\dot XZ-X\dot Z}{Z^2}
+=\frac{\dot X-x\dot Z}{Z}.
+$$
+
+Substitute the camera-frame point velocities:
+
+$$
+\begin{aligned}
+\dot x
+&=\frac{-v_x-\omega_yZ+\omega_zY-x(-v_z-\omega_xY+\omega_yX)}{Z} \\[4pt]
+&=\frac{-v_x+xv_z}{Z}-\omega_y+\omega_z\frac{Y}{Z}
++x\omega_x\frac{Y}{Z}-x\omega_y\frac{X}{Z}.
+\end{aligned}
+$$
+
+Using $$X/Z=x$$ and $$Y/Z=y$$ gives
 
 $$
 \boxed{
-\dot{Y}
-=
--v_y-\omega_zX+\omega_xZ
-},
-$$
-
-$$
-\boxed{
-\dot{Z}
-=
--v_z-\omega_xY+\omega_yX
+\dot x=-\frac{v_x}{Z}+\frac{xv_z}{Z}
++xy\omega_x-(1+x^2)\omega_y+y\omega_z
 }.
 $$
 
-## ▪ 4. Understanding each term physically
-{: id="4-understanding-each-term-physically" }
+There is no $$v_y$$ term because pure translation along the camera $$y$$-axis does not change $$X/Z$$.
 
-Consider
+### Vertical image velocity
+{: #vertical-image-velocity }
 
-$$
-\dot{X}
-=
--v_x-\omega_yZ+\omega_zY.
-$$
-
-The term $$-v_x$$ comes from camera translation along the camera $$x$$-axis. The term $$-\omega_yZ$$ comes from rotation about the camera $$y$$-axis, and $$+\omega_zY$$ comes from rotation about the optical $$z$$-axis.
-
-Similarly,
+Similarly, with $$Y=yZ$$,
 
 $$
-\dot{Y}
-=
--v_y-\omega_zX+\omega_xZ
+\dot y=\frac{\dot YZ-Y\dot Z}{Z^2}
+=\frac{\dot Y-y\dot Z}{Z}.
 $$
 
-contains the effects of translation along $$y$$, rotation about $$z$$, and rotation about $$x$$. Finally,
-
-$$
-\dot{Z}
-=
--v_z-\omega_xY+\omega_yX
-$$
-
-contains the effects of translation along $$z$$, rotation about $$x$$, and rotation about $$y$$.
-
-## ▪ 5. Define the normalized image coordinates
-{: id="5-define-the-normalized-image-coordinates" }
-
-The slides first use normalized image coordinates:
-
-$$
-x=\frac{X}{Z},
-\qquad
-y=\frac{Y}{Z}.
-$$
-
-These coordinates correspond to projection onto a virtual image plane at unit distance from the camera center. In this normalized coordinate system, the focal-length scaling has temporarily been removed. The visual feature is
-
-$$
-s
-=
-\begin{bmatrix}
-x \\
-y
-\end{bmatrix},
-$$
-
-and its time derivative is
-
-$$
-\dot{s}
-=
-\begin{bmatrix}
-\dot{x} \\
-\dot{y}
-\end{bmatrix}.
-$$
-
-## ▪ 6. Derive $$\dot{x}$$ using the quotient rule
-{: id="6-derive-dotx-using-the-quotient-rule" }
-
-Start from
-
-$$
-x=\frac{X}{Z}.
-$$
-
-Differentiate using the quotient rule:
-
-$$
-\dot{x}
-=
-\frac{\dot{X}Z-X\dot{Z}}{Z^2}.
-$$
-
-Since $$X=xZ$$, this can also be written as
-
-$$
-\dot{x}
-=
-\frac{\dot{X}-x\dot{Z}}{Z}.
-$$
-
-Substitute
-
-$$
-\dot{X}
-=
--v_x-\omega_yZ+\omega_zY
-$$
-
-and
-
-$$
-\dot{Z}
-=
--v_z-\omega_xY+\omega_yX.
-$$
-
-Then
+Substitution gives
 
 $$
 \begin{aligned}
-\dot{x}
-&=
-\frac{
--v_x-\omega_yZ+\omega_zY
--x(-v_z-\omega_xY+\omega_yX)
-}{Z}
-\\[4pt]
-&=
-\frac{
--v_x-\omega_yZ+\omega_zY
-+xv_z+x\omega_xY-x\omega_yX
-}{Z}.
+\dot y
+&=\frac{-v_y-\omega_zX+\omega_xZ-y(-v_z-\omega_xY+\omega_yX)}{Z} \\[4pt]
+&=\frac{-v_y+yv_z}{Z}-\omega_z\frac{X}{Z}+\omega_x
++y\omega_x\frac{Y}{Z}-y\omega_y\frac{X}{Z}.
 \end{aligned}
 $$
 
-Use $$X=xZ$$ and $$Y=yZ$$:
-
-$$
-\begin{aligned}
-\dot{x}
-&=
-\frac{
--v_x-\omega_yZ+\omega_zyZ
-+xv_z+x\omega_xyZ-x\omega_yxZ
-}{Z}
-\\[4pt]
-&=
--\frac{v_x}{Z}
-+\frac{xv_z}{Z}
-+xy\omega_x
--(1+x^2)\omega_y
-+y\omega_z.
-\end{aligned}
-$$
-
-Therefore,
+Using the normalized coordinates gives
 
 $$
 \boxed{
-\dot{x}
-=
--\frac{1}{Z}v_x
-+\frac{x}{Z}v_z
-+xy\omega_x
--(1+x^2)\omega_y
-+y\omega_z
+\dot y=-\frac{v_y}{Z}+\frac{yv_z}{Z}
++(1+y^2)\omega_x-xy\omega_y-x\omega_z
 }.
 $$
 
-There is no $$v_y$$ term because a pure camera translation along $$y$$ does not directly change the normalized horizontal coordinate $$x$$.
+## ▪ Point-feature interaction matrix
+{: #point-feature-interaction-matrix }
 
-## ▪ 7. Write the first row of the interaction matrix
-{: id="7-write-the-first-row-of-the-interaction-matrix" }
-
-Using the velocity ordering
+Collect the coefficients in the camera-twist order defined above:
 
 $$
-\boldsymbol{\nu}_c
-=
-\begin{bmatrix}
-v_x & v_y & v_z & \omega_x & \omega_y & \omega_z
-\end{bmatrix}^{T},
-$$
-
-we can write
-
-$$
-\dot{x}
-=
-\begin{bmatrix}
--\dfrac{1}{Z}
-&
-0
-&
-\dfrac{x}{Z}
-&
-xy
-&
--(1+x^2)
-&
-y
-\end{bmatrix}
-\boldsymbol{\nu}_c.
-$$
-
-Thus, the first row is
-
-$$
-L_x
-=
-\begin{bmatrix}
--\dfrac{1}{Z}
-&
-0
-&
-\dfrac{x}{Z}
-&
-xy
-&
--(1+x^2)
-&
-y
-\end{bmatrix}.
-$$
-
-## ▪ 8. Derive $$\dot{y}$$
-{: id="8-derive-doty" }
-
-Start from
-
-$$
-y=\frac{Y}{Z}.
-$$
-
-Differentiate:
-
-$$
-\dot{y}
-=
-\frac{\dot{Y}Z-Y\dot{Z}}{Z^2}.
-$$
-
-Since $$Y=yZ$$,
-
-$$
-\dot{y}
-=
-\frac{\dot{Y}-y\dot{Z}}{Z}.
-$$
-
-Substitute
-
-$$
-\dot{Y}
-=
--v_y-\omega_zX+\omega_xZ
-$$
-
-and
-
-$$
-\dot{Z}
-=
--v_z-\omega_xY+\omega_yX.
-$$
-
-Then
-
-$$
-\begin{aligned}
-\dot{y}
-&=
-\frac{
--v_y-\omega_zX+\omega_xZ
--y(-v_z-\omega_xY+\omega_yX)
-}{Z}
-\\[4pt]
-&=
-\frac{
--v_y-\omega_zX+\omega_xZ
-+yv_z+y\omega_xY-y\omega_yX
-}{Z}.
-\end{aligned}
-$$
-
-Use $$X=xZ$$ and $$Y=yZ$$:
-
-$$
-\begin{aligned}
-\dot{y}
-&=
-\frac{
--v_y-\omega_zxZ+\omega_xZ
-+yv_z+y\omega_xyZ-y\omega_yxZ
-}{Z}
-\\[4pt]
-&=
--\frac{v_y}{Z}
-+\frac{yv_z}{Z}
-+(1+y^2)\omega_x
--xy\omega_y
--x\omega_z.
-\end{aligned}
-$$
-
-Therefore,
-
-$$
-\boxed{
-\dot{y}
-=
--\frac{1}{Z}v_y
-+\frac{y}{Z}v_z
-+(1+y^2)\omega_x
--xy\omega_y
--x\omega_z
-}.
-$$
-
-## ▪ 9. Write the second row of the interaction matrix
-{: id="9-write-the-second-row-of-the-interaction-matrix" }
-
-The previous equation becomes
-
-$$
-\dot{y}
-=
-\begin{bmatrix}
-0
-&
--\dfrac{1}{Z}
-&
-\dfrac{y}{Z}
-&
-1+y^2
-&
--xy
-&
--x
-\end{bmatrix}
-\boldsymbol{\nu}_c.
-$$
-
-Thus,
-
-$$
-L_y
-=
-\begin{bmatrix}
-0
-&
--\dfrac{1}{Z}
-&
-\dfrac{y}{Z}
-&
-1+y^2
-&
--xy
-&
--x
-\end{bmatrix}.
-$$
-
-## ▪ 10. The complete interaction matrix
-{: id="10-the-complete-interaction-matrix" }
-
-Stack the two rows:
-
-$$
-\begin{bmatrix}
-\dot{x} \\
-\dot{y}
-\end{bmatrix}
-=
-L_s
-\begin{bmatrix}
-v_x \\
-v_y \\
-v_z \\
-\omega_x \\
-\omega_y \\
-\omega_z
-\end{bmatrix},
+\dot s
+=\begin{bmatrix}\dot x \\ \dot y\end{bmatrix}
+=L_s\boldsymbol{\nu}_c,
 $$
 
 with
 
 $$
 \boxed{
-L_s
-=
+L_s=
 \begin{bmatrix}
--\dfrac{1}{Z}
-&
-0
-&
-\dfrac{x}{Z}
-&
-xy
-&
--(1+x^2)
-&
-y
-\\[6pt]
-0
-&
--\dfrac{1}{Z}
-&
-\dfrac{y}{Z}
-&
-1+y^2
-&
--xy
-&
--x
+-\dfrac{1}{Z} & 0 & \dfrac{x}{Z} & xy & -(1+x^2) & y \\[6pt]
+0 & -\dfrac{1}{Z} & \dfrac{y}{Z} & 1+y^2 & -xy & -x
 \end{bmatrix}
 }.
 $$
 
-This is the standard point-feature interaction matrix for normalized image coordinates.
+This $$2\times6$$ interaction matrix, also called the image Jacobian, maps camera velocity to the velocity of one normalized point feature. Its first three columns describe translation and depend on depth $$Z$$; its last three describe rotation.
+
+## ▪ Pixel-coordinate interaction matrix
+{: #pixel-coordinate-interaction-matrix }
+
+For fixed camera intrinsics and zero skew, the pixel feature is
+
+$$
+s_p=\begin{bmatrix}u \\ v\end{bmatrix}
+=\begin{bmatrix}f_xx+c_x \\ f_yy+c_y\end{bmatrix},
+$$
+
+where $$f_x,f_y$$ are focal lengths in pixels and $$(c_x,c_y)$$ is the principal point. Differentiating gives
+
+$$
+\dot u=f_x\dot x,\qquad \dot v=f_y\dot y.
+$$
+
+Consequently,
+
+$$
+\dot s_p
+=\begin{bmatrix}f_x & 0 \\ 0 & f_y\end{bmatrix}\dot s
+=\underbrace{\begin{bmatrix}f_x & 0 \\ 0 & f_y\end{bmatrix}L_s}_{L_{\mathrm{pixel}}}
+\boldsymbol{\nu}_c.
+$$
+
+Thus, multiplying the normalized matrix's rows by $$f_x$$ and $$f_y$$ converts image velocity to pixels per second. The $$x,y$$ entries in $$L_s$$ remain normalized coordinates: $$x=(u-c_x)/f_x$$ and $$y=(v-c_y)/f_y$$.
+
+With nonzero intrinsic skew $$\gamma$$, the horizontal pixel coordinate is $$u=f_xx+\gamma y+c_x$$ and the multiplier becomes
+
+$$
+L_{\mathrm{pixel}}
+=\begin{bmatrix}f_x & \gamma \\ 0 & f_y\end{bmatrix}L_s.
+$$
 
 ## ▪ References
 {: #references }
 
 - François Chaumette and Seth Hutchinson. [Visual Servo Control, Part I: Basic Approaches](https://web.mit.edu/amcp/OldFiles/drg/Chaumette_Part_I.pdf). *IEEE Robotics & Automation Magazine*, 2006.
+- <i class="fab fa-youtube" aria-hidden="true"></i> [Image-Based Visual Servoing - Robot Control Part 1](https://www.youtube.com/watch?v=s_0DdxHjrfA&t=22s).
+- <i class="fab fa-youtube" aria-hidden="true"></i> [Image-Based Visual Servoing - Robot Control Part 2](https://www.youtube.com/watch?v=XDE6oxEJn3c&list=PLjoIYgWzjQHK8G2O56jsu56dmjWiipguv&index=61).

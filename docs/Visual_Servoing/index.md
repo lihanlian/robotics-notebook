@@ -26,8 +26,7 @@ The camera can move with the robot (eye-in-hand) or remain fixed. Coordinate tra
 ## ▪ Components and Topics
 {: #components-and-topics }
 
-- [Interaction Matrix]({% link docs/Visual_Servoing/interaction-matrix.md %}) explains the coordinate and motion relationships behind image-feature interaction matrices.
-- [IBVS]({% link docs/Visual_Servoing/ibvs.md %}), or image-based visual servoing, controls errors in image features such as point coordinates.
+- [IBVS]({% link docs/Visual_Servoing/ibvs.md %}), or image-based visual servoing, controls errors in image features such as point coordinates. The page derives the point-feature interaction matrix from camera-frame motion and explains its conversion to pixel coordinates.
 - [PBVS]({% link docs/Visual_Servoing/pbvs.md %}), or position-based visual servoing, controls errors in 3D pose estimated from images.
 
 In differential formulations, both methods relate feature changes to camera velocity through an interaction matrix. The matrix depends on the selected features; image coordinates and pose parameters require different forms.
