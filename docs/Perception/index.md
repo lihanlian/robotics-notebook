@@ -22,28 +22,25 @@ has_toc: false
 
 Computer vision extracts information about the world from images. In robotics, it helps estimate camera motion, locate objects, and interpret the scene so the robot can act on it. This chapter begins with the geometry connecting 3D points to image measurements.
 
-- **Camera modeling:** describe how points in space project onto an image.
-- **Calibration:** estimate the parameters needed to use that model with a real camera.
-- **Pose estimation:** infer an object's or camera's position and orientation from observations.
+The topics also cover learned visual features, object recognition, and segmentation. These produce different kinds of information: feature vectors describe appearance, detections locate objects, masks identify their image regions, and geometric estimates recover spatial relationships.
 
 ## ▪ Components and Topics
 {: #components-and-topics }
 
-- [Pinhole Camera Model]({% link docs/Perception/pinhole_camera_model.md %}) introduces perspective projection, homogeneous coordinates, and intrinsic and extrinsic camera parameters.
-- [Camera Calibration]({% link docs/Perception/camera_calibration.md %}) connects known 3D points to measured pixels to estimate camera intrinsics and the camera's pose for each calibration view.
-- [Pose Estimation]({% link docs/Perception/pose_estimation.md %}) outlines how features and model correspondences support estimating, refining, and tracking 3D pose.
+- [Camera Geometry]({% link docs/Perception/geometry/index.md %}) groups the existing camera-model, calibration, and pose-estimation notes.
+- [Visual Representations]({% link docs/Perception/representations/index.md %}) introduces feature learning, Vision Transformers, DINOv2, and DINOv3.
+- [Recognition and Detection]({% link docs/Perception/detection/index.md %}) covers classification, bounding-box detection, and YOLO.
+- [Segmentation]({% link docs/Perception/segmentation/index.md %}) covers pixel masks, segmentation tasks, SAM 2, and SAM 3.
 
-Study these topics in this order: first understand the projection model, then identify its parameters, and finally use image observations to estimate pose. A pixel identifies a viewing ray; recovering depth requires additional information.
+These groups distinguish geometry, reusable representations, and prediction tasks. A model can contribute to several tasks; the pages introduce it where its main role is easiest to understand.
 
 ## ▪ Related Foundations
 {: #related-foundations }
 
-- Coordinate frames, rotations, translations, and rigid transformations.
-- Linear algebra, homogeneous coordinates, and projective geometry.
-- Feature detection, correspondence matching, and robust estimation.
-- Measurement uncertainty and reprojection error.
-
-Visual [SLAM]({% link docs/SLAM/index.md %}) uses camera models and image correspondences to estimate motion and build maps. Object pose estimates also support grasping and visual servoing.
+- [Visual Features and Tracking]({% link docs/SLAM/frontends/visual-features.md %}): keypoints, descriptors, and image correspondences.
+- [RANSAC]({% link docs/SLAM/frontends/ransac.md %}): robust geometric estimation when some correspondences are incorrect.
+- [SLAM]({% link docs/SLAM/index.md %}): combining observations to estimate motion and build maps.
+- [Visual Servoing]({% link docs/Visual_Servoing/index.md %}): using image features or estimated pose in a feedback-control loop.
 
 ## ▪ References
 {: #references }

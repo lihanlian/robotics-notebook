@@ -1,6 +1,7 @@
 ---
 title: Pose Estimation
-parent: Computer Vision
+parent: Camera Geometry
+grand_parent: Computer Vision
 nav_order: 3
 ---
 
